@@ -21,11 +21,11 @@ export default function Layout({ children }: LayoutProps) {
     <Container>
       <Content>
         <Nav>
-          <Link href="/">
+          <Link href="/" passHref>
             <NavLink isActive={!query?.fellowship}>Home</NavLink>
           </Link>
           {fellowshipItems.map(({ fellowship, label }) => (
-            <Link key={fellowship} href={`/fellowship/${fellowship}`}>
+            <Link key={fellowship} href={`/fellowship/${fellowship}`} passHref>
               <NavLink isActive={fellowship === query?.fellowship}>
                 {label}
               </NavLink>
