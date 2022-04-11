@@ -73,7 +73,7 @@ const Container = styled.div`
   height: 100vh;
   width: 100vw;
   display: flex;
-  background: skyblue;
+  background: #0284c7;
 `;
 
 const Content = styled.div`
@@ -81,7 +81,6 @@ const Content = styled.div`
   max-width: 1024px;
   height: 100%;
   width: 100%;
-  padding: 0 0.5rem;
   display: flex;
   margin: auto;
   background-color: white;
@@ -96,6 +95,7 @@ const Content = styled.div`
 
 const Main = styled.main`
   padding: 1rem;
+  margin-top: 0.5rem;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -106,6 +106,7 @@ const Nav = styled.nav`
   justify-content: center;
   padding: 1rem;
   gap: 1rem;
+  border-bottom: 1px solid #d1d5db;
 
   @media (max-width: 600px) {
     gap: 0.5rem;
