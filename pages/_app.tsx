@@ -1,6 +1,12 @@
-import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client'
-import {createGlobalStyle, ThemeProvider} from 'styled-components'
-import type { AppProps } from 'next/app'
+import { ApolloProvider } from "@apollo/client";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import type { AppProps } from "next/app";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+
+export const client = new ApolloClient({
+  uri: "/api/graphql",
+  cache: new InMemoryCache(),
+});
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,17 +18,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         </ApolloProvider>
       </ThemeProvider>
     </>
-  )
+  );
 }
 
-const client = new ApolloClient({
-  uri: '/api/graphql',
-  cache: new InMemoryCache(),
-})
-
 const theme = {
-  colors: {
-  }
+  colors: {},
 };
 
 const GlobalStyle = createGlobalStyle`
@@ -36,12 +36,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   a {
-    color: #0070f0;
     text-decoration: none;
+    cursor: pointer;
   }
 
   a:hover {
-    color: #0050d0;
     text-decoration: underline;
   }
 

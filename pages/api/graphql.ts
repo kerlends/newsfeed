@@ -1,9 +1,9 @@
-import {server} from 'graphql/server'
+import { server } from "graphql/server";
 
 export const config = {
   api: {
     bodyParser: false,
   },
-}
+};
 
-export default server.createHandler({ path: '/api/graphql' })
+export default server.createHandler({ path: "/api/graphql" });
