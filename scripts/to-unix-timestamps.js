@@ -1,7 +1,14 @@
 const { Database } = require("sqlite3");
 const path = require("path");
+const parseDate = require("date-fns/parse");
+const isValidDate = require("date-fns/isValid");
 
 const db = new Database(path.join(process.cwd(), "db.sqlite"));
+
+function isUnixTimestamp(timestamp) {
+  const parsedDate = parseDate(timestamp, "T", new Date());
+  return isValidDate(parsedDate);
+}
 
 async function query(sql) {
   return new Promise((resolve, reject) => {
@@ -15,6 +22,13 @@ async function getTableRows(table) {
     SELECT id, created_ts, updated_ts
     FROM "${table}"
   `);
+}
+
+async function getTableRowsToConvert(table) {
+  const rows = await getTableRows(table);
+  return rows.filter(({ created_ts, updated_ts }) => {
+    return !isUnixTimestamp(created_ts) || !isUnixTimestamp(updated_ts);
+  });
 }
 
 async function convertTableRowTimestamps({ table, id, created, updated }) {
@@ -31,19 +45,21 @@ async function convertTableRowTimestamps({ table, id, created, updated }) {
 async function toUnixTimestamps() {
   const tables = ["users", "projects", "announcements"];
   for (const table of tables) {
-    console.log("Converting timestamps in table %s", table);
-    const rows = await getTableRows(table);
-    await Promise.all(
-      rows.map(({ id, created_ts, updated_ts }) =>
-        convertTableRowTimestamps({
-          table,
-          id,
-          created: created_ts,
-          updated: updated_ts,
-        })
-      )
-    );
-    console.log("%s rows updated in table %s", rows.length, table);
+    const rows = await getTableRowsToConvert(table);
+    if (rows.length > 0) {
+      console.log("Converting timestamps in table %s", table);
+      await Promise.all(
+        rows.map(({ id, created_ts, updated_ts }) =>
+          convertTableRowTimestamps({
+            table,
+            id,
+            created: created_ts,
+            updated: updated_ts,
+          })
+        )
+      );
+      console.log("%s rows updated in table %s", rows.length, table);
+    }
   }
 }
 
