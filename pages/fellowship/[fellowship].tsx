@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Layout from "components/Layout";
 import AnnouncementsList from "components/AnnouncementsList";
 import PeopleOfInterestList from "components/PeopleOfInterestList";
-import GoBackLink from "components/GoBackLink";
 
 export default function FellowshipAnnouncementsPage() {
   const { query } = useRouter();
@@ -13,14 +12,13 @@ export default function FellowshipAnnouncementsPage() {
 
   return (
     <Layout>
-      <GoBackLink />
       <Container>
         <Column>
           <h1>Announcements</h1>
           <AnnouncementsList fellowship={fellowship} />
         </Column>
         <Column>
-          <h1>Fellows of interest</h1>
+          <h1>People of interest</h1>
           <PeopleOfInterestList fellowship={fellowship} />
         </Column>
       </Container>
@@ -32,6 +30,7 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   gap: 2rem;
+  padding: 0 1rem;
 
   @media (max-width: 600px) {
     flex-direction: column;

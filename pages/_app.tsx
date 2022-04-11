@@ -40,14 +40,10 @@ const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
 
-  a:hover {
-    text-decoration: underline;
-  }
-
   h1 {
     font-size: 2rem;
-    font-weight: 700;
-    margin: 0 0 1rem;
+    font-weight: 500;
+    margin: 0 0 1.5rem;
   }
 
   h2 {

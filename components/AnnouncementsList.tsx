@@ -56,7 +56,7 @@ export default function AnnouncementsList({
             <FixedSizeList
               itemSize={300}
               itemCount={result.total}
-              height={height}
+              height={height - 100}
               width={width}
               onItemsRendered={onItemsRendered}
               itemData={result.data}

@@ -70,9 +70,9 @@ export default function PeopleOfInterestList({
         <AutoSizer ref={ref}>
           {({ height, width }) => (
             <FixedSizeList
-              itemSize={width}
+              itemSize={400}
               itemCount={totalUsers}
-              height={height}
+              height={height - 100}
               width={width}
               onItemsRendered={onItemsRendered}
               itemData={users}

@@ -4,7 +4,6 @@ import Layout from "components/Layout";
 import ProjectCard from "components/ProjectCard";
 
 import { useProjectQuery } from "generated/graphql";
-import GoBackLink from "components/GoBackLink";
 
 export default function ProjectPage() {
   const { query } = useRouter();
@@ -21,7 +20,6 @@ export default function ProjectPage() {
 
   return (
     <Layout>
-      <GoBackLink />
       <ProjectCard project={project} />
     </Layout>
   );

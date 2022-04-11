@@ -1,11 +1,10 @@
-import { Fellowship } from "generated/graphql";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export interface FellowshipLinkItem {
   label: React.ReactNode;
-  fellowship: Fellowship;
+  fellowship: string;
 }
 
 type LayoutProps = React.PropsWithChildren<{}>;
@@ -20,19 +19,21 @@ export default function Layout({ children }: LayoutProps) {
   const { query } = useRouter();
   return (
     <Container>
-      <Nav>
-        <Link href="/">
-          <NavLink isActive={!query?.fellowship}>Home</NavLink>
-        </Link>
-        {fellowshipItems.map(({ fellowship, label }) => (
-          <Link key={fellowship} href={`/fellowship/${fellowship}`}>
-            <NavLink isActive={fellowship === query?.fellowship}>
-              {label}
-            </NavLink>
+      <Content>
+        <Nav>
+          <Link href="/">
+            <NavLink isActive={!query?.fellowship}>Home</NavLink>
           </Link>
-        ))}
-      </Nav>
-      <Main>{children}</Main>
+          {fellowshipItems.map(({ fellowship, label }) => (
+            <Link key={fellowship} href={`/fellowship/${fellowship}`}>
+              <NavLink isActive={fellowship === query?.fellowship}>
+                {label}
+              </NavLink>
+            </Link>
+          ))}
+        </Nav>
+        <Main>{children}</Main>
+      </Content>
     </Container>
   );
 }
@@ -41,38 +42,72 @@ interface NavLinkProps {
   isActive?: boolean;
 }
 
+const navLinkActiveStyles = css`
+  color: #111827;
+  opacity: 1;
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0.25rem;
+    left: 1rem;
+    width: calc(100% - 2rem);
+    height: 1px;
+    background-color: #111827;
+  }
+`;
+
 const NavLink = styled.a<NavLinkProps>`
+  color: #4b5563;
   padding: 0.5rem 1rem;
   font-size: 1.5rem;
-  text-decoration: ${(props) => (props.isActive ? "underline" : "none")};
+  opacity: 0.9;
+  &:hover,
+  &:focus {
+    color: #111827;
+  }
+  ${(props) => (props.isActive ? navLinkActiveStyles : null)}
 `;
 
 const Container = styled.div`
-  min-height: 100vh;
-  min-width: 100vw;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  background: skyblue;
+`;
+
+const Content = styled.div`
+  max-height: 90vh;
+  max-width: 1024px;
+  height: 100%;
+  width: 100%;
   padding: 0 0.5rem;
   display: flex;
+  margin: auto;
+  background-color: white;
+  border-radius: 8px;
+  flex-direction: column;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
   @media (max-width: 600px) {
-    flex-direction: column;
+    max-height: 100vh;
   }
 `;
 
 const Main = styled.main`
-  padding: 1.5rem 1rem;
+  padding: 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
 `;
 
-const Nav = styled.aside`
+const Nav = styled.nav`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   padding: 1rem;
   gap: 1rem;
 
   @media (max-width: 600px) {
-    flex-direction: row;
-    padding: 1rem 0.5rem;
+    gap: 0.5rem;
   }
 `;
