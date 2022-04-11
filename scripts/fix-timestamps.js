@@ -1,12 +1,14 @@
 const { Database } = require("sqlite3");
 const path = require("path");
+
 const parseDate = require("date-fns/parse");
 const isValidDate = require("date-fns/isValid");
+const format = require("date-fns/formatISO9075");
 
 const db = new Database(path.join(process.cwd(), "db.sqlite"));
 
-function isUnixTimestamp(timestamp) {
-  const parsedDate = parseDate(timestamp, "T", new Date());
+function isValidTimestamp(timestamp) {
+  const parsedDate = parseDate(timestamp, "yyyy-MM-dd HH:mm:ss", new Date());
   return isValidDate(parsedDate);
 }
 
@@ -27,22 +29,26 @@ async function getTableRows(table) {
 async function getTableRowsToConvert(table) {
   const rows = await getTableRows(table);
   return rows.filter(({ created_ts, updated_ts }) => {
-    return !isUnixTimestamp(created_ts) || !isUnixTimestamp(updated_ts);
+    return !isValidTimestamp(created_ts) || !isValidTimestamp(updated_ts);
   });
 }
 
-async function convertTableRowTimestamps({ table, id, created, updated }) {
-  const createdUnixTimestamp = new Date(created).getTime();
-  const updatedUnixTimestamp = new Date(updated).getTime();
+async function fixTableRowTimestamps({ table, id, created, updated }) {
+  const createdWithSeconds = format(new Date(created));
+  const updatedWithSeconds = format(new Date(updated));
 
-  return await query(`
+  try {
+    return await query(`
     UPDATE "${table}"
-    SET updated_ts = ${updatedUnixTimestamp}, created_ts = ${createdUnixTimestamp}
+    SET updated_ts = "${updatedWithSeconds}", created_ts = "${createdWithSeconds}"
     WHERE id = ${id}
   `);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-async function toUnixTimestamps() {
+async function addSecondsToTimestamps() {
   const tables = ["users", "projects", "announcements"];
   for (const table of tables) {
     const rows = await getTableRowsToConvert(table);
@@ -50,7 +56,7 @@ async function toUnixTimestamps() {
       console.log("Converting timestamps in table %s", table);
       await Promise.all(
         rows.map(({ id, created_ts, updated_ts }) =>
-          convertTableRowTimestamps({
+          fixTableRowTimestamps({
             table,
             id,
             created: created_ts,
@@ -63,6 +69,6 @@ async function toUnixTimestamps() {
   }
 }
 
-toUnixTimestamps().then(() => {
+addSecondsToTimestamps().then(() => {
   console.log("Done");
 });
