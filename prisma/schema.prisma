@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../db.sqlite"
+}
+
+model Announcement {
+  id         Int      @id @default(autoincrement())
+  fellowship String
+  title      String
+  body       String
+  createdAt  DateTime @default(now()) @map("created_ts")
+  updatedAt  DateTime @default(now()) @map("updated_ts")
+
+  @@map("announcements")
+}
+
+model Project {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String
+  iconUrl     String        @map("icon_url")
+  createdAt   DateTime      @default(now()) @map("created_ts")
+  updatedAt   DateTime      @default(now()) @map("updated_ts")
+  users       UserProject[]
+
+  @@map("projects")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model UserProject {
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int     @map("user_id")
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int     @map("project_id")
+
+  @@id([userId, projectId])
+  @@map("user_projects")
+}
+
+model User {
+  id         Int           @id @default(autoincrement())
+  name       String
+  bio        String
+  avatarUrl  String        @map("avatar_url")
+  fellowship String
+  createdAt  DateTime      @default(now()) @map("created_ts")
+  updatedAt  DateTime      @default(now()) @map("updated_ts")
+  projects   UserProject[]
+
+  @@map("users")
+}
