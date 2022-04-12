@@ -68,9 +68,9 @@ export default function AnnouncementsList({
         <AutoSizer ref={ref}>
           {({ height, width }) => (
             <FixedSizeList
-              itemSize={300}
+              itemSize={250}
               itemCount={total}
-              height={height - 100}
+              height={height}
               width={width}
               onItemsRendered={onItemsRendered}
               itemData={data}

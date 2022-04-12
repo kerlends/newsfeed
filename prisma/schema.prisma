@@ -30,7 +30,6 @@ model Project {
   @@map("projects")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model UserProject {
   user      User    @relation(fields: [userId], references: [id])
   userId    Int     @map("user_id")

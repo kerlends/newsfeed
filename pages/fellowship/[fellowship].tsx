@@ -15,11 +15,11 @@ export default function FellowshipAnnouncementsPage() {
       <Container>
         <Column>
           <h1>Announcements</h1>
-          <AnnouncementsList fellowship={fellowship} />
+          <AnnouncementsList fellowship={fellowship} key={fellowship} />
         </Column>
         <Column>
           <h1>People of interest</h1>
-          <PeopleOfInterestList fellowship={fellowship} />
+          <PeopleOfInterestList fellowship={fellowship} key={fellowship} />
         </Column>
       </Container>
     </Layout>
