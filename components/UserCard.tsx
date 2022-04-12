@@ -4,9 +4,9 @@ import Card from "./Card";
 import Markdown from "./Markdown";
 import type { UserQuery } from "generated/graphql";
 
-type User = UserQuery["user"];
+type User = NonNullable<UserQuery["user"]>;
 
-type Project = User["projects"][number];
+type Project = NonNullable<User["projects"]>[number];
 
 interface UserCardProps {
   user: User;
@@ -25,7 +25,7 @@ export default function UserCard({ user, hideProjects, style }: UserCardProps) {
           <h2>{user.name}</h2>
           <p>Fellowship: {user.fellowship}</p>
           <Markdown>{user.bio}</Markdown>
-          {!hideProjects && !!user.projects.length && (
+          {!hideProjects && !!user.projects?.length && (
             <>
               <h3>Projects:</h3>
               {user.projects.map((p) => (

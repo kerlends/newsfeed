@@ -10,6 +10,6 @@ export const typeDefs = gql`
     name: String!
     description: String!
     iconUrl: String!
-    users: [User!]!
+    users: [User!]
   }
 `;

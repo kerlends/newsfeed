@@ -9,10 +9,10 @@ export const typeDefs = gql`
   type User {
     id: Int!
     name: String!
-    bio: String
+    bio: String!
     avatarUrl: String!
     fellowship: String
-    projects: [Project!]!
+    projects: [Project!]
   }
 
   type UsersQueryResult {

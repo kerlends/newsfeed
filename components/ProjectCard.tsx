@@ -22,7 +22,7 @@ export default function ProjectCard({ project }: Props) {
         <ColumnRight>
           <h2>{project.name}</h2>
           <Markdown>{project.description}</Markdown>
-          {!!project.users.length && (
+          {!!project.users?.length && (
             <>
               <h3>Participants:</h3>
               {project.users.map((u) => (
