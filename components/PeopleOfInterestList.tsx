@@ -1,11 +1,14 @@
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import { gql } from "@apollo/client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FixedSizeList } from "react-window";
 
 import UserCard from "components/UserCard";
-import { usePeopleOfInterestQuery } from "generated/graphql";
+import {
+  PeopleOfInterestQuery,
+  usePeopleOfInterestQuery,
+} from "generated/graphql";
 
 function getConnectedFellowships(fellowship: string) {
   switch (fellowship) {
@@ -29,40 +32,45 @@ export default function PeopleOfInterestList({
   fellowship,
 }: PeopleOfInterestListProps) {
   const [page, setPage] = useState(1);
+  const [data, setData] = useState<PeopleOfInterestQuery["users"]["data"]>([]);
+
+  const FETCH_COUNT = 4;
 
   const fellowshipsOfInterest = getConnectedFellowships(fellowship);
 
-  const { error, previousData, data } = usePeopleOfInterestQuery({
+  const {
+    error,
+    previousData,
+    data: queryData,
+  } = usePeopleOfInterestQuery({
     skip: !fellowship,
     variables: {
       input: {
-        take: page * 8,
+        skip: (page - 1) * FETCH_COUNT,
+        take: FETCH_COUNT,
         where: {
           fellowship: { in: fellowshipsOfInterest },
         },
       },
     },
+    onCompleted: (data) => setData((prev) => prev.concat(data.users.data)),
   });
 
-  const users = data?.users?.data || previousData?.users.data;
-  const totalUsers = data?.users.total || previousData?.users.total;
+  const users = data;
+  const totalUsers = queryData?.users.total || previousData?.users.total;
 
   if (!users || typeof totalUsers !== "number" || error) {
     return null;
   }
 
   const handleFetchNext = (start: number) => {
-    setPage(Math.ceil(start / 8) + 1);
+    setPage(Math.ceil(start / FETCH_COUNT) + 1);
   };
-
-  if (users.length === 0) {
-    return null;
-  }
 
   return (
     <InfiniteLoader
       key={fellowship}
-      isItemLoaded={(index) => !!users[index]}
+      isItemLoaded={(index) => !!data[index]}
       itemCount={totalUsers}
       loadMoreItems={handleFetchNext}
     >

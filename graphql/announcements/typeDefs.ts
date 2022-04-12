@@ -2,7 +2,7 @@ import { gql } from "apollo-server-micro";
 
 export const typeDefs = gql`
   extend type Query {
-    announcements(input: AnnouncementsQueryInput): AnnouncementsQueryResult
+    announcements(input: AnnouncementsQueryInput): AnnouncementsQueryResult!
   }
 
   type Announcement {

@@ -1,5 +1,8 @@
 import { gql } from "@apollo/client";
-import { useFellowshipAnnouncementsQuery } from "generated/graphql";
+import {
+  FellowshipAnnouncementsQuery,
+  useFellowshipAnnouncementsQuery,
+} from "generated/graphql";
 
 import { useState } from "react";
 import InfiniteLoader from "react-window-infinite-loader";
@@ -17,37 +20,48 @@ export default function AnnouncementsList({
   gutterSpacing = "1rem",
 }: AnnouncementsListProps) {
   const [page, setPage] = useState(1);
+  const [data, setData] = useState<
+    FellowshipAnnouncementsQuery["announcements"]["data"]
+  >([]);
 
-  const { error, previousData, data, loading } =
-    useFellowshipAnnouncementsQuery({
-      variables: {
-        input: {
-          take: 8 * page,
-          where: fellowship
-            ? { fellowship: { equals: fellowship } }
-            : undefined,
-        },
+  const FETCH_COUNT = 3;
+
+  const {
+    error,
+    previousData,
+    data: queryData,
+  } = useFellowshipAnnouncementsQuery({
+    skip: !fellowship,
+    variables: {
+      input: {
+        skip: (page - 1) * FETCH_COUNT,
+        take: FETCH_COUNT,
+        where: fellowship ? { fellowship: { equals: fellowship } } : undefined,
       },
-    });
+    },
+    onCompleted: (data) =>
+      setData((prev) => prev.concat(data.announcements.data)),
+  });
 
-  const result = data?.announcements || previousData?.announcements;
+  const result = data;
+  const total = queryData?.announcements.total;
 
-  if (!result || error) {
+  if (!result || error || typeof total === "undefined") {
     return null;
   }
 
   const handleFetchNext = (start: number) => {
-    setPage(Math.ceil(start / 8) + 1);
+    setPage(Math.ceil(start / FETCH_COUNT));
   };
 
-  if (result.data.length === 0) {
+  if (data.length === 0) {
     return <p>No recent announcements found, for now.</p>;
   }
 
   return (
     <InfiniteLoader
-      isItemLoaded={(index) => !!result.data[index]}
-      itemCount={result.total}
+      isItemLoaded={(index) => !!data[index]}
+      itemCount={total}
       loadMoreItems={handleFetchNext}
     >
       {({ onItemsRendered, ref }) => (
@@ -55,11 +69,11 @@ export default function AnnouncementsList({
           {({ height, width }) => (
             <FixedSizeList
               itemSize={300}
-              itemCount={result.total}
+              itemCount={total}
               height={height - 100}
               width={width}
               onItemsRendered={onItemsRendered}
-              itemData={result.data}
+              itemData={data}
             >
               {({ data, style, index }) => (
                 <AnnouncementCard
