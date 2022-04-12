@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { gql } from "@apollo/client";
 import Layout from "components/Layout";
 import UserCard from "components/UserCard";
-import { useUserQuery } from "generated/graphql";
+import { useUserQuery } from "./[id].generated";
 
 export default function UserPage() {
   const { query } = useRouter();

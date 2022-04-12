@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import {
   FellowshipAnnouncementsQuery,
   useFellowshipAnnouncementsQuery,
-} from "generated/graphql";
+} from "./AnnouncementsList.generated";
 
 import { useState } from "react";
 import InfiniteLoader from "react-window-infinite-loader";

@@ -20,6 +20,7 @@
 *.pem
 /generated
 /graphql/resolver-types.ts
+*.generated.*
 
 # debug
 npm-debug.log*

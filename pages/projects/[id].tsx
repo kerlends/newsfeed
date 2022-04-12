@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 import Layout from "components/Layout";
 import ProjectCard from "components/ProjectCard";
 
-import { useProjectQuery } from "generated/graphql";
+import { useProjectQuery } from "./[id].generated";
 
 export default function ProjectPage() {
   const { query } = useRouter();

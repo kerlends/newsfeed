@@ -8,7 +8,7 @@ import UserCard from "components/UserCard";
 import {
   PeopleOfInterestQuery,
   usePeopleOfInterestQuery,
-} from "generated/graphql";
+} from "./PeopleOfInterestList.generated";
 
 function getConnectedFellowships(fellowship: string) {
   switch (fellowship) {

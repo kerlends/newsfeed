@@ -14,10 +14,17 @@ generates:
       maybeValue: T | undefined
       enumsAsTypes: true
 
-  generated/graphql.tsx:
-    documents: "{pages,components}/{**/*,*}.tsx"
+  generated/graphql.ts:
     plugins:
       - "typescript"
+
+  ./:
+    documents: "{pages,components}/{**/*,*}.tsx"
+    preset: near-operation-file
+    presetConfig:
+      extension: .generated.tsx
+      baseTypesPath: generated/graphql.ts
+    plugins:
       - "typescript-operations"
       - "typescript-react-apollo"
     config:
